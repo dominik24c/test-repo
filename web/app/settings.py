@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-5oj*h_*tj_z^hx3k(jssyk&+@g8l2aa^l&&(==^#s&f9z%hcst
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'home',
-    'blog'
+    'blog',
+    'django_celery_beat'
 ]
 
 MIDDLEWARE = [
@@ -131,3 +132,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+CELERY_BROKER_URL = "redis://redis:6379"
+CELERY_RESULT_BACKEND = "redis://redis:6379"
+CELERY_ACCEPT_CONTENT = ['application/json']  
+CELERY_TASK_SERIALIZER = 'json'  
+CELERY_RESULT_SERIALIZER = 'json'  
+CELERY_TIMEZONE = "Europe/Warsaw"

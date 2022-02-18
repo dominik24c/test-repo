@@ -3,7 +3,44 @@ version: '3.9'
 services:
   web:
     build: ./web
+    command: python3 manage.py runserver 0.0.0.0:8000
+    container_name: django
+    depends_on:
+      - postgres
     ports:
       - "8000:8000"
     volumes:
       - ./web:/app
+    restart: always
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    env_file:
+      - ./web/.env
+    ports:
+      - "5433:5432"
+    volumes:
+      - db:/var/lib/postgresql
+  redis:
+    image: redis:alpine
+    container_name: redis
+  celery:
+    build: ./web
+    command: celery -A app worker -l INFO 
+    container_name: celery
+    env_file:
+      - ./web/.env
+    depends_on:
+      - redis
+      - web
+  celery_beat:
+    build: ./web
+    command: celery -A app beat -l INFO 
+    container_name: celery_beat
+    env_file:
+      - ./web/.env
+    depends_on:
+      - redis
+      - web
+volumes:
+  db:
